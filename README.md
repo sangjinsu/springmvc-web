@@ -52,3 +52,78 @@
         </table>
 ```
 
+
+
+### 속성 변경 - th:action
+
+- th:action
+- action에 값이 없으면 현재 URL에 데이터를 전송한다 
+
+
+
+### @ModelAttribute - Model  추가 
+
+- @ModelAttribute로 지정한 객체를 자동으로 넣어준다  
+
+```java
+    @PostMapping("/add")
+    public String addItemV2(
+            @ModelAttribute("item") Item item,
+            Model model
+    ) {
+        itemRepository.save(item);
+
+        // model.addAttribute("item", item);
+        return "basic/item";
+    }
+```
+
+
+
+### addItem 상품 등록 처리 단계
+
+```java
+//    @PostMapping("/add")
+//    public String addItemV1(
+//            @RequestParam String itemName,
+//            @RequestParam Integer price,
+//            @RequestParam Integer quantity,
+//            Model model
+//    ) {
+//        Item item = new Item();
+//        item.setItemName(itemName);
+//        item.setPrice(price);
+//        item.setQuantity(quantity);
+//
+//        itemRepository.save(item);
+//
+//        model.addAttribute("item", item);
+//        return "basic/item";
+//    }
+
+//    @PostMapping("/add")
+//    public String addItemV2(
+//            @ModelAttribute("item") Item item,
+//            Model model
+//    ) {
+//        itemRepository.save(item);
+//
+//        // model.addAttribute("item", item);
+//        return "basic/item";
+//    }
+
+//    @PostMapping("/add")
+//    public String addItemV3(
+//            @ModelAttribute("item") Item item
+//    ) {
+//        itemRepository.save(item);
+//        return "basic/item";
+//    }
+
+    @PostMapping("/add")
+    public String addItemV4(Item item) {
+        itemRepository.save(item);
+        return "basic/item";
+    }
+```
+
