@@ -14,5 +14,8 @@ public class UpdateParamDto {
     }
 
     public UpdateParamDto(String itemName, Integer price, Integer quantity) {
+        this.itemName = itemName;
+        this.price = price;
+        this.quantity = quantity;
     }
 }
