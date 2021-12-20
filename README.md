@@ -127,3 +127,61 @@
     }
 ```
 
+
+
+### PRG Post/Redirect/Get
+
+- 웹 브라우저의 새로 고침은 마지막에 서버에 전송한 데이터를 다시 전송한다 
+- 상품 등록 폼에서 데이터를 입력하고 저장을 선택하면 `POST /add` + 상품 데이터를 서버로 전송한다 
+- 새로 고침하면 다시 전송한다 
+- 상품 데이터가 계속 쌓이게 된다 
+
+#### Post Redirect Get
+
+ ```java
+     @PostMapping("/add")
+     public String addItemV5(Item item) {
+         itemRepository.save(item);
+         return "redirect:/basic/items/" + item.getId();
+     }
+ ```
+
+```java
+    @GetMapping("/{itemId}")
+    public String item(@PathVariable Long itemId, Model model) {
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
+        return "basic/item";
+    }
+```
+
+
+
+### RedirectAttributes
+
+#### 주의
+
+`"redirect:/basic/items/" + item.getId()` redirect 에서 URL 변수를 더해서 사용하는 것은 URL 인코딩이 안되기 때문에 위험하다 
+
+ ```java
+     @PostMapping("/add")
+     public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
+         Item savedItem = itemRepository.save(item);
+         redirectAttributes.addAttribute("itemId", savedItem.getId());
+         redirectAttributes.addAttribute("status", true);
+         return "redirect:/basic/items/{itemId}";
+     }
+ ```
+
+
+
+- 리다이렉트 결과 
+
+  `http://localhost:8080/basic/items/3?status=true`
+
+
+
+```html
+    <h2 th:if="${param.status}" th:text="저장 완료"></h2>
+```
+

@@ -2,10 +2,12 @@ package hello.serviceitem.web.basic;
 
 import hello.serviceitem.domain.Item;
 import hello.serviceitem.domain.ItemRepository;
+import hello.serviceitem.dto.UpdateParamDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import javax.annotation.PostConstruct;
@@ -29,6 +31,19 @@ public class BasicItemController {
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items", items);
         return "basic/items";
+    }
+
+    @GetMapping("/{itemId}/edit")
+    public String editForm(@PathVariable Long itemId, Model model) {
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
+        return "basic/editForm";
+    }
+
+    @PostMapping("/{itemId}/edit")
+    public String edit(@PathVariable Long itemId, @ModelAttribute UpdateParamDto updateParamDto) {
+        itemRepository.update(itemId, updateParamDto);
+        return "redirect:/basic/items/{itemId}";
     }
 
     /**
@@ -89,9 +104,23 @@ public class BasicItemController {
 //        return "basic/item";
 //    }
 
+//    @PostMapping("/add")
+//    public String addItemV4(Item item) {
+//        itemRepository.save(item);
+//        return "basic/item";
+//    }
+
+//    @PostMapping("/add")
+//    public String addItemV5(Item item) {
+//        itemRepository.save(item);
+//        return "redirect:/basic/items/" + item.getId();
+//    }
+
     @PostMapping("/add")
-    public String addItemV4(Item item) {
-        itemRepository.save(item);
-        return "basic/item";
+    public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/basic/items/{itemId}";
     }
 }
